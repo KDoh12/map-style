@@ -1,8 +1,14 @@
 {
   "version": 8,
-  "id": "basic-v2",
-  "name": "Basic",
+  "id": "ocean",
+  "name": "Ocean",
   "sources": {
+    "land": { "url": "https://api.maptiler.com/tiles/land/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "vector" },
+    "ocean": { "url": "https://api.maptiler.com/tiles/ocean/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "vector" },
+    "contours": { "url": "https://api.maptiler.com/tiles/contours/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "vector" },
+    "ocean_rgb": { "url": "https://api.maptiler.com/tiles/ocean-rgb/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "raster-dem" },
+    "terrain_rgb": { "url": "https://api.maptiler.com/tiles/terrain-rgb-v2/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "raster-dem" },
+    "maptiler_planet": { "url": "https://api.maptiler.com/tiles/v3/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "vector" },
     "ports": {
       "url": "pmtiles://https://contig.us/data/pmtiles/kdoh12/ports.pmtiles",
       "type": "vector"
@@ -11,7 +17,10 @@
       "url": "pmtiles://https://contig.us/data/pmtiles/kdoh12/time_zones.pmtiles",
       "type": "vector"
     },
-    "maptiler_planet": { "url": "https://api.maptiler.com/tiles/v3/tiles.json?key=3KiQy9PePciQLmOGS1DP", "type": "vector" },
+    "ship_lanes": {
+      "data": "https://contig.us/kdoh12/mari-time-zones/data/shipping_lanes.geojson",
+      "type": "geojson"
+    },
     "maptiler_attribution": {
       "attribution": "<a href=\"https://www.maptiler.com/copyright/\" target=\"_blank\">&copy; MapTiler</a> <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; OpenStreetMap contributors</a>",
       "type": "vector"
@@ -21,116 +30,12 @@
     {
       "id": "Background",
       "type": "background",
-      "layout": { "visibility": "visible" },
+      "layout": {
+        "visibility": "visible"
+      },
       "paint": {
-        "background-color": {
-          "stops": [
-            [6, "hsl(60,20%,85%)"],
-            [20, "hsl(60,24%,90%)"]
-          ]
-        }
+        "background-color": "#bfdbf8"
       }
-    },
-    {
-      "id": "Residential",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "landuse",
-      "maxzoom": 14,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "fill-color": {
-          "stops": [
-            [2, "hsl(60,23%,81%)"],
-            [14, "hsl(60,21%,85%)"]
-          ]
-        }
-      },
-      "filter": ["in", "class", "neighbourhood", "residential", "suburb"]
-    },
-    {
-      "id": "Glacier",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "globallandcover",
-      "maxzoom": 8,
-      "layout": { "visibility": "visible" },
-      "paint": { "fill-color": "hsla(0, 0%, 100%, 0.7)" },
-      "filter": ["all", ["in", "class", "snow"]]
-    },
-    {
-      "id": "Forest",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "globallandcover",
-      "maxzoom": 8,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "fill-color": {
-          "stops": [
-            [1, "hsla(91,40%,70%,0.25)"],
-            [7, "hsla(91,40%,70%,0.6)"]
-          ]
-        }
-      },
-      "filter": ["in", "class", "forest", "tree"]
-    },
-    {
-      "id": "Sand",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "landcover",
-      "minzoom": 8,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "fill-color": "hsla(54,81%,53%,0.3)",
-        "fill-opacity": {
-          "stops": [
-            [7, 0.7],
-            [12, 1]
-          ]
-        },
-        "fill-antialias": false
-      },
-      "filter": ["==", "class", "sand"]
-    },
-    {
-      "id": "Grass",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "landcover",
-      "minzoom": 8,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "fill-color": "hsla(89,40%,78%,0.8)",
-        "fill-opacity": {
-          "stops": [
-            [7, 0.7],
-            [12, 1]
-          ]
-        },
-        "fill-antialias": false
-      },
-      "filter": ["==", "class", "grass"]
-    },
-    {
-      "id": "Wood",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "landcover",
-      "minzoom": 8,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "fill-color": "hsla(91,40%,70%,0.8)",
-        "fill-opacity": {
-          "stops": [
-            [7, 0.7],
-            [12, 1]
-          ]
-        },
-        "fill-antialias": false
-      },
-      "filter": ["==", "class", "wood"]
     },
     {
       "id": "Water",
@@ -138,571 +43,505 @@
       "source": "maptiler_planet",
       "source-layer": "water",
       "layout": { "visibility": "visible" },
-      "paint": { "fill-color": "hsl(205,56%,73%)", "fill-opacity": ["match", ["get", "intermittent"], 1, 0.7, 1] },
-      "filter": ["all", ["!=", "brunnel", "tunnel"]]
+      "paint": { "fill-color": "hsl(210,94%,88%)" },
+      "filter": ["any", ["!=", "intermittent", 1], ["!=", "brunnel", "tunnel"]]
     },
     {
-      "id": "River",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "waterway",
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(205,56%,73%)",
-        "line-width": {
-          "stops": [
-            [9, 1],
-            [18, 3]
-          ]
-        },
-        "line-opacity": ["match", ["get", "brunnel"], "tunnel", 0.7, 1]
-      },
-      "filter": ["all", ["!=", "intermittent", 1]]
-    },
-    {
-      "id": "River intermittent",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "waterway",
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(205,56%,73%)",
-        "line-width": {
-          "stops": [
-            [9, 1],
-            [18, 3]
-          ]
-        },
-        "line-opacity": 1,
-        "line-dasharray": [2, 1]
-      },
-      "filter": ["==", "intermittent", 1]
-    },
-    {
-      "id": "Transit tunnel",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "minzoom": 4,
-      "layout": { "line-cap": "butt", "line-join": "miter", "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(34, 12%, 66%)",
-        "line-width": {
-          "stops": [
-            [14, 0.5],
-            [16, 1.2],
-            [18, 2]
-          ]
-        },
-        "line-opacity": 0.5,
-        "line-dasharray": [3, 3]
-      },
-      "filter": ["all", ["==", "brunnel", "tunnel"], ["==", "class", "transit"]]
-    },
-    {
-      "id": "Bridge",
+      "id": "0m to -50m",
       "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "layout": { "visibility": "visible" },
-      "paint": { "fill-color": "hsl(47, 26%, 88%)", "fill-opacity": 0.7 },
-      "filter": ["all", ["==", "$type", "Polygon"], ["==", "brunnel", "bridge"]]
-    },
-    {
-      "id": "Pier",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "layout": { "visibility": "visible" },
-      "paint": { "fill-color": "hsl(60,24%,88%)", "fill-opacity": 1, "fill-antialias": true },
-      "metadata": {},
-      "filter": ["==", "class", "pier"]
-    },
-    {
-      "id": "Road network",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "minzoom": 4,
-      "layout": { "line-cap": "round", "line-join": "round", "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(0, 0%, 100%)",
-        "line-width": [
-          "interpolate",
-          ["linear", 2],
-          ["zoom"],
-          4,
-          0.5,
-          5,
-          0.75,
-          6,
-          1,
-          10,
-          ["match", ["get", "class"], ["motorway"], ["match", ["get", "brunnel"], ["bridge"], 0, 2.5], ["trunk"], 1.5, 1],
-          12,
-          [
-            "match",
-            ["get", "class"],
-            ["motorway"],
-            ["match", ["get", "ramp"], 1, 1, 4],
-            ["trunk"],
-            2,
-            ["primary"],
-            2.5,
-            ["secondary", "tertiary"],
-            2,
-            ["minor"],
-            1,
-            ["pier", "service", "track"],
-            0.5,
-            0.5
-          ],
-          14,
-          [
-            "match",
-            ["get", "class"],
-            ["motorway"],
-            ["match", ["get", "ramp"], 1, 5, 6],
-            ["trunk"],
-            3,
-            ["primary"],
-            5,
-            ["secondary"],
-            4,
-            ["tertiary"],
-            3,
-            ["minor"],
-            2,
-            ["pier", "service", "track"],
-            1,
-            2
-          ],
-          16,
-          [
-            "match",
-            ["get", "class"],
-            ["motorway", "trunk", "primary"],
-            8,
-            ["secondary"],
-            7,
-            ["tertiary"],
-            6,
-            ["minor"],
-            4,
-            ["pier", "service", "track"],
-            2,
-            4
-          ],
-          20,
-          [
-            "match",
-            ["get", "class"],
-            ["motorway", "trunk", "primary"],
-            28,
-            ["secondary"],
-            24,
-            ["tertiary"],
-            20,
-            ["minor", "service", "track", "pier"],
-            16,
-            16
-          ]
-        ],
-        "line-offset": 0,
-        "line-opacity": ["match", ["get", "brunnel"], "tunnel", 0.5, 1]
-      },
-      "filter": [
-        "any",
-        ["!has", "class"],
-        [
-          "in",
-          "class",
-          "aerialway",
-          "bus_guideway",
-          "busway",
-          "courtyard",
-          "minor",
-          "minor_construction",
-          "motorway",
-          "motorway_construction",
-          "path_construction",
-          "pier",
-          "primary",
-          "primary_construction",
-          "raceway",
-          "raceway_construction",
-          "secondary",
-          "secondary_construction",
-          "service",
-          "service_construction",
-          "storage_tank",
-          "tertiary",
-          "tertiary_construction",
-          "track",
-          "track_construction",
-          "trunk",
-          "trunk_construction"
-        ]
-      ]
-    },
-    {
-      "id": "Path",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "minzoom": 15,
-      "layout": { "line-cap": "square", "line-join": "bevel", "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(0, 0%, 100%)",
-        "line-width": {
-          "base": 1.55,
-          "stops": [
-            [15, 0.5],
-            [16, 1],
-            [18, 2],
-            [20, 3],
-            [22, 4]
-          ]
-        },
-        "line-dasharray": [1, 1]
-      },
-      "filter": ["==", "class", "path"]
-    },
-    {
-      "id": "Building",
-      "type": "fill",
-      "source": "maptiler_planet",
-      "source-layer": "building",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
       "layout": { "visibility": "visible" },
       "paint": {
-        "fill-color": {
-          "stops": [
-            [13, "hsl(48,25%,73%)"],
-            [16, "hsl(47,32%,77%)"]
-          ]
-        },
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,62%,78%)", 6, "hsl(211, 93%, 88%)"],
         "fill-opacity": 1,
         "fill-antialias": true
-      }
+      },
+      "filter": ["==", "depth", -50]
     },
     {
-      "id": "Railway",
+      "id": "-50m to -100m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,62%,78%)", 6, "hsl(210,79%,85%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -100]
+    },
+    {
+      "id": "-100m to -200m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,62%,78%)", 6, "hsl(210,68%,82%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -200]
+    },
+    {
+      "id": "-200m to -250m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,62%,78%)", 6, "hsl(210,68%,82%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -250]
+    },
+    {
+      "id": "-250m to -500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,62%,78%)", 6, "hsl(210,55%,77%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -500]
+    },
+    {
+      "id": "-500m to -750m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,54%,74%)", 6, "hsl(210,51%,74%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -750]
+    },
+    {
+      "id": "-750m to -1000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(210,54%,74%)", 6, "hsl(210,47%,72%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -1000]
+    },
+    {
+      "id": "-1000m to -1250m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,50%,70%)", 6, "hsl(210,44%,69%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -1250]
+    },
+    {
+      "id": "-1250m to -1500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,50%,70%)", 6, "hsl(210,41%,66%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -1500]
+    },
+    {
+      "id": "-1500m to -1750m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,50%,70%)", 6, "hsl(210,39%,64%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -1750]
+    },
+    {
+      "id": "-1750m to -2000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,50%,70%)", 6, "hsl(210,37%,61%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -2000]
+    },
+    {
+      "id": "-2000m to -2500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,46%,66%)", 6, "hsl(210,35%,58%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -2500]
+    },
+    {
+      "id": "-2500m to -3000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,46%,66%)", 6, "hsl(210,34%,56%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -3000]
+    },
+    {
+      "id": "-3000m to -3500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,46%,66%)", 6, "hsl(210,33%,53%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -3500]
+    },
+    {
+      "id": "-3500m to -4000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,44%,61%)", 6, "hsl(210,31%,50%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -4000]
+    },
+    {
+      "id": "-4000m to -4500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,44%,61%)", 6, "hsl(210,33%,48%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -4500]
+    },
+    {
+      "id": "-4500m to -5000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,41%,57%)", 6, "hsl(210,35%,45%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -5000]
+    },
+    {
+      "id": "-5000m to -5500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,41%,57%)", 6, "hsl(210,38%,42%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -5500]
+    },
+    {
+      "id": "-5500m to -6000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,40%,53%)", 6, "hsl(210,41%,40%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -6000]
+    },
+    {
+      "id": "-6000m to -6500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(209,40%,53%)", 6, "hsl(210,45%,37%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -6500]
+    },
+    {
+      "id": "-6500m to -7000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,40%,48%)", 6, "hsl(210,49%,35%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -7000]
+    },
+    {
+      "id": "-7000m to -7500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,40%,48%)", 6, "hsl(209,54%,32%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -7500]
+    },
+    {
+      "id": "-7500m to -8000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,60%,29%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -8000]
+    },
+    {
+      "id": "-8000m to -8500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,67%,27%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -8500]
+    },
+    {
+      "id": "-8500m to -9000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,75%,24%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -9000]
+    },
+    {
+      "id": "-9000m to -9500m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,87%,21%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -9500]
+    },
+    {
+      "id": "-9500m to -10000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,100%,20%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -10000]
+    },
+    {
+      "id": "-10000m to -11000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,100%,19%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -11000]
+    },
+    {
+      "id": "-11000m to -12000m",
+      "type": "fill",
+      "source": "ocean",
+      "source-layer": "contour",
+      "minzoom": 0,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": ["interpolate", ["linear"], ["zoom"], 0, "hsl(208,45%,40%)", 6, "hsl(209,100%,18%)"],
+        "fill-opacity": 1,
+        "fill-antialias": true
+      },
+      "filter": ["==", "depth", -12000]
+    },
+    {
+      "id": "Depth contour",
       "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
+      "source": "ocean",
+      "source-layer": "contour_line",
       "minzoom": 9,
       "layout": { "visibility": "visible" },
       "paint": {
-        "line-color": "hsla(33,12%,67%,0.8)",
-        "line-width": [
-          "interpolate",
-          ["linear", 1],
-          ["zoom"],
-          9,
-          ["match", ["get", "service"], ["yard", "spur"], 0, 0.5],
-          12,
-          ["match", ["get", "service"], ["yard", "spur"], 0, 0.6],
-          16,
-          ["match", ["get", "service"], ["yard", "spur"], 0.75, 2],
-          22,
-          ["match", ["get", "service"], ["yard", "spur"], 1.5, 3]
-        ],
-        "line-opacity": ["match", ["get", "brunnel"], "tunnel", 0.25, 1]
-      },
-      "filter": ["==", "class", "rail"]
+        "line-blur": 0.5,
+        "line-color": "hsl(210,100%,92%)",
+        "line-width": 1,
+        "line-opacity": ["interpolate", ["exponential", 1], ["zoom"], 9, 0.15, 14, 0.35]
+      }
     },
     {
-      "id": "Transit",
+      "id": "Land shadow",
       "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "transportation",
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(34, 12%, 66%)",
-        "line-width": {
-          "stops": [
-            [14, 0.5],
-            [16, 1.2],
-            [18, 2]
-          ]
-        },
-        "line-opacity": 0.5
-      },
-      "filter": ["all", ["==", "class", "transit"], ["any", ["!has", "brunnel"], ["in", "brunnel", "bridge", "ford"]]]
-    },
-    {
-      "id": "Aeroway",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "aeroway",
-      "minzoom": 10,
-      "layout": { "line-cap": "round", "line-join": "round", "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(0, 0%, 100%)",
-        "line-width": [
-          "interpolate",
-          ["linear", 2],
-          ["zoom"],
-          10,
-          ["match", ["get", "class"], ["runway"], 1, ["taxiway"], 0.5, 0],
-          14,
-          ["match", ["get", "class"], ["runway"], 3, ["taxiway"], 2, 0],
-          16,
-          ["match", ["get", "class"], ["runway"], 10, ["taxiway"], 6, 0]
-        ],
-        "line-opacity": 1
-      },
-      "metadata": { "mapbox:group": "1444849345966.4436" }
-    },
-    {
-      "id": "Airport labels",
-      "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "aerodrome_label",
-      "minzoom": 10,
-      "layout": {
-        "text-font": ["Noto Sans Regular"],
-        "text-size": {
-          "stops": [
-            [10, 10],
-            [14, 12],
-            [16, 14]
-          ]
-        },
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [0, 0.5],
-        "text-max-width": 8
-      },
-      "paint": { "text-color": "hsl(0,0%,12%)", "text-halo-blur": 1, "text-halo-color": "hsl(0, 0%, 100%)", "text-halo-width": 1.4 },
-      "filter": ["has", "iata"]
-    },
-    {
-      "id": "Station labels",
-      "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "poi",
-      "minzoom": 12,
-      "layout": {
-        "text-font": ["Noto Sans Regular"],
-        "text-size": {
-          "stops": [
-            [10, 10],
-            [14, 12],
-            [16, 14]
-          ]
-        },
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [0, 0.5],
-        "text-max-width": 8
-      },
-      "paint": { "text-color": "hsl(0,0%,12%)", "text-halo-blur": 1, "text-halo-color": "hsl(0, 0%, 100%)", "text-halo-width": 1.4 },
-      "filter": [
-        "all",
-        ["==", "class", "railway"],
-        ["any", ["!has", "subclass"], ["any", ["in", "subclass", "station"], ["!in", "subclass", "station"]]]
-      ]
-    },
-    {
-      "id": "Road labels",
-      "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "transportation_name",
-      "minzoom": 14,
-      "layout": {
-        "text-font": ["Noto Sans Regular"],
-        "text-size": {
-          "base": 1.4,
-          "stops": [
-            [14, 8],
-            [17, 10],
-            [20, 12]
-          ]
-        },
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "symbol-spacing": {
-          "stops": [
-            [13, 250],
-            [20, 350]
-          ]
-        },
-        "text-transform": "uppercase",
-        "symbol-placement": "line",
-        "text-letter-spacing": 0.1,
-        "text-rotation-alignment": "map"
-      },
-      "paint": { "text-color": "hsl(0,0%,5%)", "text-halo-color": "hsl(0, 100%, 100%)", "text-halo-width": 1 },
-      "filter": [
-        "all",
-        [
-          "any",
-          ["!has", "subclass"],
-          [
-            "in",
-            "subclass",
-            "bridge",
-            "bridleway",
-            "busway",
-            "cable_car",
-            "chair_lift",
-            "construction",
-            "corridor",
-            "cycleway",
-            "drag_lift",
-            "footway",
-            "gondola",
-            "highway",
-            "industrial",
-            "j-bar",
-            "junction",
-            "living_street",
-            "minor",
-            "mixed_lift",
-            "motorway",
-            "motorway_link",
-            "motoway",
-            "no",
-            "path",
-            "pedestrian",
-            "platform",
-            "platter",
-            "primary",
-            "primary_link",
-            "proposed",
-            "rail",
-            "residential",
-            "rest_area",
-            "road",
-            "secondary",
-            "secondary_link",
-            "service",
-            "services",
-            "steps",
-            "t-bar",
-            "tertiary",
-            "tertiary_link",
-            "track",
-            "trunk",
-            "trunk_link",
-            "unclassified",
-            "widening",
-            "yes"
-          ]
-        ],
-        [
-          "any",
-          ["!has", "class"],
-          [
-            "in",
-            "class",
-            "bus_guideway",
-            "busway",
-            "ferry",
-            "minor",
-            "minor_construction",
-            "motorway",
-            "motorway_construction",
-            "motorway_junction",
-            "path_construction",
-            "primary",
-            "primary_construction",
-            "raceway",
-            "raceway_construction",
-            "secondary",
-            "secondary_construction",
-            "service_construction",
-            "tertiary",
-            "tertiary_construction",
-            "track",
-            "track_construction",
-            "trunk",
-            "trunk_construction"
-          ]
-        ]
-      ]
-    },
-    {
-      "id": "Other border",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "boundary",
-      "minzoom": 3,
+      "source": "land",
+      "source-layer": "land",
       "maxzoom": 24,
-      "layout": { "visibility": "visible" },
-      "paint": {
-        "line-color": "hsla(0,0%,60%,0.65)",
-        "line-width": {
-          "stops": [
-            [4, 0.8],
-            [11, 1.75],
-            [18, 2.5]
-          ]
-        },
-        "line-dasharray": [2, 1]
-      },
-      "filter": ["all", ["in", "admin_level", 3, 4, 5, 6, 7, 8, 9, 10], ["==", "maritime", 0]]
-    },
-    {
-      "id": "Disputed border",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "boundary",
-      "minzoom": 0,
-      "layout": { "line-cap": "round", "line-join": "round", "visibility": "visible" },
-      "paint": {
-        "line-color": "hsl(0,0%,64%)",
-        "line-width": {
-          "stops": [
-            [1, 1],
-            [5, 1.5],
-            [10, 2]
-          ]
-        },
-        "line-dasharray": [2, 2]
-      },
-      "filter": ["all", ["==", "admin_level", 2], ["==", "maritime", 0], ["==", "disputed", 1]]
-    },
-    {
-      "id": "Country border",
-      "type": "line",
-      "source": "maptiler_planet",
-      "source-layer": "boundary",
-      "minzoom": 0,
-      "layout": { "line-cap": "round", "line-join": "round", "visibility": "visible" },
+      "layout": { "line-cap": "round", "line-join": "round", "visibility": "visible", "line-miter-limit": 0, "line-round-limit": 0 },
       "paint": {
         "line-blur": {
           "stops": [
-            [4, 0.5],
-            [10, 0]
+            [1, 29],
+            [14, 18],
+            [18, 9]
           ]
         },
-        "line-color": "hsl(0,0%,64%)",
+        "line-color": {
+          "stops": [
+            [6, "hsl(190,75%,84%)"],
+            [9, "hsl(187,88%,80%)"],
+            [14, "hsl(187,100%,77%)"]
+          ]
+        },
         "line-width": {
           "stops": [
-            [1, 1],
-            [5, 1.5],
-            [10, 2]
+            [1, 13],
+            [2, 11],
+            [6, 10],
+            [9, 9],
+            [12, 9],
+            [18, 12]
           ]
-        }
-      },
-      "filter": ["all", ["==", "admin_level", 2], ["==", "disputed", 0], ["==", "maritime", 0]]
+        },
+        "line-opacity": {
+          "stops": [
+            [1, 1],
+            [6, 0.5],
+            [9, 0.6],
+            [12, 0.75],
+            [16, 0.85],
+            [17, 0.45],
+            [18, 0.25]
+          ]
+        },
+        "line-translate": [0, 1]
+      }
     },
     {
-      "id": "Ports",
-      "type": "circle",
-      "source": "ports",
-      "source-layer": "ports",
-      "minzoom": 0,
-      "layout": {
-        "visibility": "visible"
-      },
+      "id": "Land shadow 1",
+      "type": "fill",
+      "source": "land",
+      "source-layer": "land",
+      "layout": { "visibility": "visible" },
       "paint": {
-        "circle-color": "#31B4AB"
+        "fill-color": "hsl(200,58%,29%)",
+        "fill-opacity": {
+          "stops": [
+            [6, 0.5],
+            [14, 0.7]
+          ]
+        },
+        "fill-antialias": true,
+        "fill-translate": {
+          "stops": [
+            [6, [2, 2]],
+            [9, [1.6, 1.6]]
+          ]
+        }
       }
+    },
+    {
+      "id": "Land shadow 2",
+      "type": "fill",
+      "source": "land",
+      "source-layer": "land",
+      "layout": { "visibility": "visible" },
+      "paint": { "fill-color": "hsl(200,58%,29%)", "fill-opacity": 0.8, "fill-antialias": true, "fill-translate": [1, 1] }
     },
     {
       "id": "Time Zones",
@@ -716,7 +555,7 @@
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#cccccc",
+        "line-color": "#FCD097",
         "line-dasharray": [2, 6],
         "line-width": {
           "stops": [
@@ -728,117 +567,532 @@
       }
     },
     {
-      "id": "Place labels",
-      "type": "symbol",
+      "id": "Land",
+      "type": "fill",
+      "source": "land",
+      "source-layer": "land",
+      "layout": { "visibility": "visible" },
+      "paint": { "fill-color": "#A6A6A6", "fill-antialias": true }
+    },
+    {
+      "id": "Ocean RGB",
+      "type": "hillshade",
+      "source": "ocean_rgb",
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "hillshade-accent-color": "hsla(192,100%,50%,0.3)",
+        "hillshade-exaggeration": {
+          "stops": [
+            [6, 0.65],
+            [16, 0.45]
+          ]
+        },
+        "hillshade-shadow-color": {
+          "stops": [
+            [1, "hsla(220,54%,41%,0.3)"],
+            [10, "hsla(220,63%,22%,0.7)"]
+          ]
+        },
+        "hillshade-highlight-color": {
+          "stops": [
+            [1, "hsla(0,0%,100%,0.6)"],
+            [10, "hsla(0,0%,100%,0.4)"]
+          ]
+        },
+        "hillshade-illumination-direction": 250
+      }
+    },
+    {
+      "id": "Terrain RGB",
+      "type": "hillshade",
+      "source": "terrain_rgb",
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "hillshade-accent-color": "#DBDBDB",
+        "hillshade-shadow-color": "#000000",
+        "hillshade-highlight-color": "#949494"
+      }
+    },
+    {
+      "id": "River",
+      "type": "line",
       "source": "maptiler_planet",
-      "source-layer": "place",
-      "minzoom": 0,
-      "maxzoom": 16,
-      "layout": {
-        "text-font": ["Noto Sans Regular"],
-        "text-size": [
-          "interpolate",
-          ["linear", 1],
-          ["zoom"],
-          3,
-          11,
-          8,
-          ["match", ["get", "class"], "city", 15, 13],
-          11,
-          ["match", ["get", "class"], "city", 16, ["suburb", "neighbourhood", "quarter", "hamlet", "isolated_dwelling"], 10, 13],
-          16,
-          ["match", ["get", "class"], "city", 21, ["suburb", "neighbourhood", "quarter", "hamlet", "isolated_dwelling"], 14, 16]
-        ],
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "text-max-width": 10
+      "source-layer": "waterway",
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "line-blur": 0.25,
+        "line-color": {
+          "stops": [
+            [2, "hsl(211,45%,70%)"],
+            [10, "hsl(210,94%,87%)"]
+          ]
+        },
+        "line-width": {
+          "stops": [
+            [4, 0.75],
+            [8, 1],
+            [15, 2]
+          ]
+        },
+        "line-opacity": 1
       },
-      "paint": { "text-color": "hsl(0, 0%, 0%)", "text-halo-blur": 0, "text-halo-color": "hsla(0, 0%, 100%, 0.75)", "text-halo-width": 2 },
+      "filter": ["all"]
+    },
+    {
+      "id": "Landform",
+      "type": "line",
+      "source": "ocean",
+      "source-layer": "landform",
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "line-blur": 1,
+        "line-color": "hsl(221,88%,90%)",
+        "line-opacity": {
+          "stops": [
+            [3, 1],
+            [14, 0.5]
+          ]
+        },
+        "line-dasharray": [4, 4]
+      },
+      "filter": ["!has", "class"]
+    },
+    {
+      "id": "Glacier",
+      "type": "fill",
+      "source": "maptiler_planet",
+      "source-layer": "landcover",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": { "visibility": "visible" },
+      "paint": {
+        "fill-color": "#C2C2C2",
+        "fill-opacity": 0.5,
+        "fill-antialias": true
+      },
+      "metadata": {},
+      "filter": ["==", "class", "ice"]
+    },
+    {
+      "id": "Major Shipping Lanes",
+      "type": "line",
+      "source": "ship_lanes",
+      "filter": ["==", "Type", "Major"],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#5B554D",
+        "line-width": 3,
+        "line-opacity": {
+          "stops": [
+            [0, 0.5],
+            [3, 0.5],
+            [4, 0.8]
+          ]
+        }
+      }
+    },
+    {
+      "id": "Middle Shipping Lanes",
+      "type": "line",
+      "source": "ship_lanes",
+      "filter": ["==", "Type", "Middle"],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#5B554D",
+        "line-width": 1.5,
+        "line-opacity": {
+          "stops": [
+            [0, 0],
+            [2, 0],
+            [4, 0.5],
+            [5, 0.8]
+          ]
+        }
+      }
+    },
+    {
+      "id": "Minor Shipping Lanes",
+      "type": "line",
+      "source": "ship_lanes",
+      "filter": ["==", "Type", "Minor"],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#5B554D",
+        "line-width": 0.5,
+        "line-opacity": {
+          "stops": [
+            [0, 0],
+            [2, 0],
+            [4, 0.5],
+            [5, 0.8]
+          ]
+        }
+      }
+    },
+    {
+      "id": "Time Zone Labels",
+      "type": "symbol",
+      "source": "time_zones",
+      "source-layer": "time_zones",
+      "minzoom": 4,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": 12,
+        "text-field": "{time_zone}",
+        "text-justify": "center",
+        "text-ignore-placement": false,
+        "text-offset": [0, 1],
+        "symbol-placement": "line",
+        "symbol-avoid-edges": true,
+        "symbol-spacing": 350
+      },
+      "paint": {
+        "text-color": "#FCD097",
+        "text-halo-color": "#436c95",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "Ports",
+      "type": "symbol",
+      "source": "ports",
+      "source-layer": "ports",
+      "minzoom": 0,
+      "layout": {
+        "visibility": "visible",
+        "icon-size": {
+          "stops": [
+            [1, 0.6],
+            [3, 1]
+          ]
+        },
+        "icon-image": "harbor",
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": 12,
+        "text-field": ["get", "name"],
+        "text-anchor": "top",
+        "text-offset": [0, -2]
+      },
+      "paint": {
+        "text-halo-color": "hsl(0, 100%, 100%)",
+        "text-halo-width": {
+          "stops": [
+            [11, 1.6],
+            [15, 1.3]
+          ]
+        },
+        "text-opacity": {
+          "stops": [
+            [0, 0],
+            [3, 0],
+            [4, 0.5],
+            [5, 1]
+          ]
+        }
+      }
+    },
+    {
+      "id": "Landform labels",
+      "type": "symbol",
+      "source": "ocean",
+      "source-layer": "landform",
+      "minzoom": 2,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": 14,
+        "text-field": ["concat", ["get", "name"], " ", ["get", "class"]],
+        "visibility": "visible",
+        "text-offset": [0, 1],
+        "text-justify": "center",
+        "symbol-spacing": 250,
+        "symbol-placement": "line",
+        "text-letter-spacing": {
+          "stops": [
+            [2, 0.5],
+            [10, 0.25]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [3, "hsl(210,56%,28%)"],
+            [6, "hsl(208,94%,7%)"]
+          ]
+        }
+      },
       "filter": [
         "any",
         ["!has", "class"],
-        ["in", "class", "hamlet", "isolated_dwelling", "neighbourhood", "province", "quarter", "suburb", "town", "village"]
+        [
+          "any",
+          [
+            "in",
+            "class",
+            "Basin",
+            "Channel",
+            "Continental Slope",
+            "Fracture Zone",
+            "Fracture Zone Province",
+            "Fracture Zone System",
+            "Peak",
+            "Plain",
+            "Plateau",
+            "Province",
+            "Ridge",
+            "Rise",
+            "Sea Channel",
+            "Seachannel",
+            "Seamount Chain",
+            "Seamount Group"
+          ],
+          [
+            "!in",
+            "class",
+            "Basin",
+            "Channel",
+            "Continental Slope",
+            "Fracture Zone",
+            "Fracture Zone Province",
+            "Fracture Zone System",
+            "Peak",
+            "Plain",
+            "Plateau",
+            "Province",
+            "Ridge",
+            "Rise",
+            "Sea Channel",
+            "Seachannel",
+            "Seamount Chain",
+            "Seamount Group"
+          ]
+        ]
       ]
     },
     {
-      "id": "City labels",
+      "id": "Depth labels",
       "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "place",
-      "maxzoom": 16,
+      "source": "ocean",
+      "source-layer": "contour_line",
+      "minzoom": 8,
       "layout": {
-        "text-font": ["Noto Sans Regular"],
-        "text-size": ["interpolate", ["linear", 1], ["zoom"], 3, 11, 8, 15, 11, 16, 16, 21],
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "text-max-width": 10
-      },
-      "paint": { "text-color": "hsl(0, 0%, 0%)", "text-halo-blur": 0, "text-halo-color": "hsla(0, 0%, 100%, 0.75)", "text-halo-width": 2 },
-      "filter": ["==", "class", "city"]
-    },
-    {
-      "id": "Country labels",
-      "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "place",
-      "minzoom": 1,
-      "maxzoom": 12,
-      "layout": {
-        "text-font": ["Noto Sans Bold"],
-        "text-size": [
-          "interpolate",
-          ["linear", 1],
-          ["zoom"],
-          0,
-          8,
-          1,
-          10,
-          4,
-          ["case", [">", ["get", "rank"], 2], 13, 15],
-          8,
-          ["case", [">", ["get", "rank"], 2], 18, 22]
-        ],
-        "text-field": "{name:latin}",
-        "visibility": "visible",
-        "text-padding": {
-          "stops": [
-            [1, 0],
-            [4, 2]
-          ]
-        },
-        "text-max-width": 8
-      },
-      "paint": { "text-color": "hsl(0, 0%, 13%)", "text-halo-blur": 1, "text-halo-color": "hsla(0, 0%, 100%, 0.75)", "text-halo-width": 2 },
-      "filter": ["==", "class", "country"]
-    },
-    {
-      "id": "Continent labels",
-      "type": "symbol",
-      "source": "maptiler_planet",
-      "source-layer": "place",
-      "maxzoom": 1,
-      "layout": {
-        "text-font": ["Noto Sans Bold"],
+        "text-font": ["Libre Baskerville Italic"],
         "text-size": {
           "stops": [
-            [0, 12],
-            [2, 13]
+            [9, 9],
+            [12, 12],
+            [14, 14]
           ]
         },
-        "text-field": "{name:latin}",
+        "text-field": "{depth}",
         "visibility": "visible",
         "text-justify": "center",
-        "text-transform": "uppercase"
+        "text-padding": {
+          "stops": [
+            [9, 20],
+            [12, 0]
+          ]
+        },
+        "symbol-placement": "line",
+        "symbol-avoid-edges": false,
+        "text-letter-spacing": 0.1
       },
-      "paint": { "text-color": "hsl(0, 0%, 13%)", "text-halo-blur": 1, "text-halo-color": "hsla(0, 0%, 100%, 0.75)", "text-halo-width": 2 },
-      "metadata": {},
-      "filter": ["==", "class", "continent"]
+      "paint": {
+        "text-color": [
+          "interpolate",
+          ["linear", 2],
+          ["zoom"],
+          8,
+          ["case", [">", ["get", "depth"], -4000], "hsl(212,56%,25%)", "hsl(208,48%,71%)"],
+          12,
+          ["case", [">", ["get", "depth"], -4000], "hsl(209,93%,12%)", "hsl(210, 14%, 97%)"]
+        ],
+        "text-halo-color": "hsl(211,30%,54%)"
+      }
+    },
+    {
+      "id": "Undersea line labels",
+      "type": "symbol",
+      "source": "ocean",
+      "source-layer": "landform",
+      "minzoom": 7,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": {
+          "stops": [
+            [8, 15],
+            [12, 20],
+            [14, 24]
+          ]
+        },
+        "text-field": ["concat", ["get", "name"], " ", ["get", "class"]],
+        "visibility": "visible",
+        "symbol-spacing": 350,
+        "symbol-placement": "line"
+      },
+      "paint": { "text-color": "hsl(208,85%,11%)" }
+    },
+    {
+      "id": "Undersea labels",
+      "type": "symbol",
+      "source": "ocean",
+      "source-layer": "landform",
+      "minzoom": 7,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": {
+          "stops": [
+            [8, 12],
+            [12, 16],
+            [16, 24]
+          ]
+        },
+        "text-field": ["concat", ["get", "name"], " ", ["get", "class"]],
+        "visibility": "visible"
+      },
+      "paint": {
+        "text-color": ["match", ["get", "name"], "Challenger", "hsl(180, 100%, 79%)", "hsl(210,100%,8%)"],
+        "text-halo-blur": 3,
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "Water labels",
+      "type": "symbol",
+      "source": "maptiler_planet",
+      "source-layer": "water_name",
+      "minzoom": 0,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": [
+          "interpolate",
+          ["linear", 2],
+          ["zoom"],
+          0,
+          ["match", ["get", "class"], "ocean", 9, 7],
+          2,
+          ["match", ["get", "class"], "ocean", 11, 9],
+          3,
+          ["match", ["get", "class"], "ocean", 12, 10],
+          4,
+          ["match", ["get", "class"], "ocean", 16, 12],
+          12,
+          ["match", ["get", "class"], "ocean", 24, 18]
+        ],
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "visibility": "visible",
+        "text-max-width": {
+          "stops": [
+            [1, 4],
+            [4, 6]
+          ]
+        },
+        "text-transform": "uppercase",
+        "text-letter-spacing": 0.2
+      },
+      "paint": {
+        "text-color": "hsl(209,93%,12%)",
+        "text-opacity": [
+          "interpolate",
+          ["linear", 2],
+          ["zoom"],
+          3.9,
+          ["match", ["get", "class"], "ocean", 1, 0],
+          4,
+          ["match", ["get", "class"], "ocean", 1, 1]
+        ]
+      }
+    },
+    {
+      "id": "River labels",
+      "type": "symbol",
+      "source": "maptiler_planet",
+      "source-layer": "waterway",
+      "minzoom": 12,
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": {
+          "stops": [
+            [12, 12],
+            [16, 16]
+          ]
+        },
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "visibility": "visible",
+        "symbol-spacing": 650,
+        "symbol-placement": "line"
+      },
+      "paint": { "text-color": "hsl(210,31%,50%)" },
+      "filter": ["==", "class", "river"]
+    },
+    {
+      "id": "Lake labels",
+      "type": "symbol",
+      "source": "maptiler_planet",
+      "source-layer": "water_name",
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": {
+          "stops": [
+            [9, 14],
+            [16, 18]
+          ]
+        },
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "visibility": "visible",
+        "symbol-spacing": 450,
+        "symbol-placement": "line"
+      },
+      "paint": { "text-color": "hsl(224,39%,48%)" },
+      "filter": ["==", "class", "lake"]
+    },
+    {
+      "id": "Island labels",
+      "type": "symbol",
+      "source": "maptiler_planet",
+      "source-layer": "place",
+      "layout": {
+        "text-font": ["Libre Baskerville Italic"],
+        "text-size": {
+          "stops": [
+            [8, 12],
+            [14, 18],
+            [18, 24]
+          ]
+        },
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "visibility": "visible",
+        "text-padding": 20,
+        "symbol-z-order": "viewport-y",
+        "text-max-width": 4
+      },
+      "paint": {
+        "text-color": "hsl(213,26%,40%)",
+        "text-halo-blur": {
+          "stops": [
+            [8, 4],
+            [12, 2]
+          ]
+        },
+        "text-halo-color": "hsl(0,0%,100%)",
+        "text-halo-width": {
+          "stops": [
+            [8, 2],
+            [12, 1]
+          ]
+        }
+      },
+      "filter": ["all", ["==", "class", "island"]]
     }
   ],
-  "metadata": {
-    "maptiler:copyright": "This style was generated on MapTiler Cloud. Usage outside of MapTiler Cloud requires valid MapTiler Data Package: https://www.maptiler.com/data/package/ -- please contact us."
-  },
   "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=3KiQy9PePciQLmOGS1DP",
+  "sprite": "https://api.maptiler.com/maps/575ec5bd-47d3-402f-8cf4-7a7249f0c15d/sprite",
   "bearing": 0,
   "pitch": 0,
   "center": [0, 0],

@@ -9,4 +9,9 @@ maplibregl.addProtocol("pmtiles", protocol.tile);
 const map = new maplibregl.Map({
   container: "map",
   style: "./scripts/style.json",
+  zoom: 2,
+  minZoom: 1,
 });
+
+let nav = new maplibregl.NavigationControl();
+map.addControl(nav, "top-right");
